@@ -1,6 +1,4 @@
 // commit.js
-// This script writes a formatted timestamp to data.json and creates multiple Git commits with unique timestamps.
-
 import moment from 'moment';
 import { writeFile } from 'fs/promises';
 import simpleGit from 'simple-git';
@@ -35,34 +33,28 @@ const messages = [
   "Refactor user authentication logic"
 ];
 
-// Function to create commits across many days
-async function makeCommits(days, commitsPerDay) {
-  // Loop through the past 'days' days to create commits
+// Function to create 20 commits per day for a specified number of days
+async function makeCommits(days) {
+  const commitsPerDay = 20; // Fixed to 20 commits per day
+
   for (let day = 0; day < days; day++) {
-    // For each day, loop to create multiple commits
     for (let commit = 0; commit < commitsPerDay; commit++) {
       // Calculate a unique timestamp for each commit
       const commitDate = moment().subtract(day, 'days').subtract(commit, 'minutes').format();
-      
-      // Create the commit data object with the new timestamp
       const commitData = {
         date: commitDate
       };
 
-      // Write the updated commit data to data.json
       try {
         await writeFile(jsonFilePath, JSON.stringify(commitData, null, 2));
         console.log(`data.json updated for day ${day + 1}, commit ${commit + 1} with date: ${commitDate}`);
       } catch (error) {
         console.error('Error writing to data.json:', error);
-        // Optionally continue to the next commit if there's an error
         continue;
       }
 
-      // Select a random commit message from the array
       const commitMessage = messages[Math.floor(Math.random() * messages.length)] + ` on ${commitDate}`;
 
-      // Stage, commit, and log the commit
       try {
         await git.add([jsonFilePath]);
         await git.commit(commitMessage);
@@ -73,7 +65,6 @@ async function makeCommits(days, commitsPerDay) {
     }
   }
 
-  // Once all commits are made, push them to the remote repository.
   try {
     await git.push();
     console.log('Pushed all commits successfully.');
@@ -82,5 +73,5 @@ async function makeCommits(days, commitsPerDay) {
   }
 }
 
-// Call the function to create commits for the past 292 days with 5 commits per day.
-makeCommits(292, 5);
+// Call the function to create commits for a specific number of days
+makeCommits(10); // Adjust the number of days as needed
