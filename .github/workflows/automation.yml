@@ -1,0 +1,29 @@
+name: Automated GitHub Activity
+
+# This schedule runs every day at midnight (UTC). Adjust the cron expression if needed.
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  commit-activity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Commit Automation Script
+        run: node commit.js
+
+      - name: Run GitHub Activities Script
+        run: node githubActivities.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
