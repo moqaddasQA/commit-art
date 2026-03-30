@@ -2,12 +2,11 @@ name: Automated GitHub Activity
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "23 13 * * *"  # 1:23 PM UTC daily — non-round time looks less like a bot
   workflow_dispatch:
 
 permissions:
   contents: write
-  issues: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -34,10 +33,5 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Commit Automation Script
+      - name: Run commit script
         run: node commit.js
-
-      - name: Run GitHub Activities Script
-        run: node githubActivities.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
